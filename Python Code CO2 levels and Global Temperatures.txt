@@ -1,0 +1,63 @@
+import pandas as pd
+from matplotlib import pyplot as plt
+from matplotlib import style
+import numpy as np
+import csv
+from scipy.stats import pearsonr
+
+
+#Creating dataframe from co2.csv beginning from 1970 taking date and co2 part per million (ppm) measurement
+df = pd.read_csv('co2.csv', usecols=[0,3], skiprows=range(1,145))
+
+# Shorten data set to every 20 rows to make it more viewer friendly when graphing 
+df = df.iloc[::20, :]
+
+# Create a graph of the data
+df.plot(x= 'Year', y= 'Carbon Dioxide (ppm)', color='red')
+plt.xlabel('Year')
+plt.ylabel('Carbon Dioxide (ppm)')
+plt.grid(True)
+plt.title('Carbon Dioxide Levels (ppm) by Year')
+plt.show()
+
+
+#Data frame of avg global temps starting at 1970
+df1 = pd.read_csv('GlobalTemperatures.csv', usecols=[0, 1], skiprows=range(1,2641))
+
+# Shorten data set to every 20 rows to make it more viewer friendly when graphing 
+df1 = df1.iloc[::20, :]
+
+# Create a graph of the data
+df1.plot(x='dt', y='LandAverageTemperature', kind='bar', color='red')
+plt.grid(True)
+plt.xlabel('1970 - 2015')
+plt.ylabel('Average Temperature (C)')
+plt.xticks(size=6, rotation=45)
+plt.figure(figsize=(30,70))
+#fig, ax = plt.subplots()
+plt.grid(True)
+plt.show()
+
+
+# Calculating the correlation coefficient and p-value between the data sets
+
+# Converting Carbon Dioxide and Global Temperature data frames to arrays
+graph1 = np.array(df)
+graph2 = np.array(df1)
+
+# Removing the date column of the arrays to only leave the numerical values
+graph1 = graph1[:,1]
+graph2 = graph2[:,1]
+
+
+# Removing last element from caron dixide ppm array to match size of temperature array. 
+# No impact to calculations, it removed the year 2016 from the end and fully aligns with GLobal Temp data set range.
+graph1 = graph1[:-1]
+
+
+# Calculating 
+corr, p_value = pearsonr(graph1, graph2)
+
+# Display CC and P-value 
+print("Correlation coefficient:", corr)
+print("P-value:", p_value)
